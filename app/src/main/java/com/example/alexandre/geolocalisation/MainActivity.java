@@ -25,14 +25,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LocationListener {
 
     TextView currentText_long,currentText_lat,addressText;
     Button changeLocation, getAddress, testProximity;
     LocationManager manager;
     MockLocationProvider mock;
     Geocoder geo;
-    LocationListener lis;
     List<Address> list;
     Location currentLocation;
     @Override
@@ -40,11 +39,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Verifier permission
         if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{
                     Manifest.permission.ACCESS_FINE_LOCATION}, 2);
         }
-
 
         currentText_long = (TextView) findViewById(R.id.current_long);
         currentText_lat = (TextView) findViewById(R.id.current_lat);
@@ -53,11 +52,15 @@ public class MainActivity extends AppCompatActivity {
         getAddress = (Button) findViewById(R.id.button2);
         testProximity = (Button) findViewById(R.id.proximity);
         geo = new Geocoder(this, Locale.getDefault());
+
+        // Récupérer le service système
         manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
+        //Recherche de la derniere localisation dans tous les providers
         ArrayList<LocationProvider> providers = new ArrayList<LocationProvider>();
         List<String> names = manager.getProviders(true);
 
+        /*A decommenter pour activer la partie derniere localisation
         for (String name : names) {
             currentLocation = manager.getLastKnownLocation(manager.getProvider(name).getName());
             if (currentLocation != null) {
@@ -65,47 +68,26 @@ public class MainActivity extends AppCompatActivity {
                 currentText_lat.setText("Lat : " + currentLocation.getLatitude() + "");
                 System.out.println(currentLocation.getLatitude() + "");
                 break;
+            }
         }
-        }
+        */
 
-        lis = new LocationListener() {
+        /*A decommenter pour activer la partie récupérer les informations
+        manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1, this);
+         */
 
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
+        /**
+         A decommenter pour activer la partie mock
+         Pensez à regarder la classe MockLocationProvider
+         mock = new MockLocationProvider(LocationManager.NETWORK_PROVIDER, this);
+         changeLocation.setOnClickListener(new View.OnClickListener() {
+         public void onClick(View v) {
+         mock.pushLocation(12.34, 23.45);
+         }
+         });
+         */
 
-            @Override
-            public void onProviderEnabled(String provider) {
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-            }
-
-            @Override
-            public void onLocationChanged(Location location) {
-                Toast.makeText(MainActivity.this, "Location changed", Toast.LENGTH_SHORT).show();
-                currentLocation = location;
-                currentText_long.setText("Long : " + location.getLongitude() + "");
-                currentText_lat.setText("Lat : " + location.getLatitude() + "");
-            }
-        };
-
-        mock = new MockLocationProvider(LocationManager.NETWORK_PROVIDER, this);
-
-        manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1, lis);
-
-        Intent intent = new Intent(this, AlertReceiver.class);
-        PendingIntent pending = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        manager.addProximityAlert(20.01, 19.99, 150, -1, pending);
-
-
-        changeLocation.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                mock.pushLocation(12.34, 23.45);
-            }
-        });
-
+        /* A decommenter pour la partie Convertir les données
         getAddress.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (currentLocation != null) {
@@ -115,8 +97,8 @@ public class MainActivity extends AppCompatActivity {
                                 currentLocation.getLongitude(), 1);
                         addressText.setText(
                                 "Pays:  " + list.get(0).getCountryName() + "\n" +
-                                        "Ville: " + list.get(0).getLocality() + "\n" +
-                                        "Rue:   " + list.get(0).getAddressLine(0));
+                                "Ville: " + list.get(0).getLocality() + "\n" +
+                                "Rue:   " + list.get(0).getAddressLine(0));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -125,14 +107,66 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        */
+
+        /*A decommenter pour la partie proximité
+        Intent intent = new Intent(this, AlertReceiver.class);
+        PendingIntent pending = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        manager.addProximityAlert(50.00, 50.00, 10000, -1, pending);
 
         testProximity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mock.pushLocation(20, 20);
+                mock.pushLocation(49.99, 50);
+            }
+        });
+        */
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        Toast.makeText(MainActivity.this, "Location changed", Toast.LENGTH_SHORT).show();
+        currentLocation = location;
+        currentText_long.setText("Long : " + location.getLongitude() + "");
+        currentText_lat.setText("Lat : " + location.getLatitude() + "");
+    }
+
+    public void onPause() {
+        super.onPause();
+        try {
+            manager.removeUpdates(this);
+        } catch (SecurityException e) {
 
         }
-        });
+    }
 
+    public void onResume() {
+        super.onResume();
+        try {
+            manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1, this);
+        } catch (SecurityException e) {
+
+        }
+    }
+
+    public void onDestroy() {
+        try {
+            manager.removeUpdates(this);
+        } catch (SecurityException e) {
+
+        }
+        mock.shutdown();
     }
 }

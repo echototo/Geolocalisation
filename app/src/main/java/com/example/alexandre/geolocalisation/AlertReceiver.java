@@ -11,9 +11,9 @@ import android.widget.Toast;
  */
 
 public class AlertReceiver extends BroadcastReceiver {
+
     @Override
     public void onReceive(Context context, Intent intent) {
-        Toast.makeText(context.getApplicationContext(), "Arrivé à proximité", Toast.LENGTH_SHORT).show();
-
+        System.out.println("Proximité");
     }
 }

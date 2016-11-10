@@ -11,66 +11,78 @@
     tools:context="com.example.alexandre.geolocalisation.MainActivity">
 
      <Button
-        android:text="Change location"
+         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/button"
         android:layout_below="@+id/current_lat"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="48dp" />
+         android:layout_marginTop="48dp"
+         android:text="Change location" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/current_long"
-        android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/current_lat"
-        android:layout_marginTop="26dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/current_lat"
-        android:layout_marginTop="17dp"
-        android:layout_marginEnd="43dp"
-        android:layout_below="@+id/label_current"
-        android:layout_alignEnd="@+id/button2" />
-
-    <TextView
-        android:text="Current"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/button2"
+        android:layout_below="@+id/label_current"
+        android:layout_marginEnd="43dp"
+        android:layout_marginTop="17dp"
+        android:text="No history" />
+
+    <TextView
         android:id="@+id/label_current"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/current_long"
         android:layout_alignBottom="@+id/current_long"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="18dp" />
+        android:layout_marginStart="18dp"
+        android:text="Current" />
 
     <Button
-        android:text="Get address"
+        android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/button2"
         android:layout_below="@+id/address"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="62dp" />
+        android:layout_marginTop="62dp"
+        android:text="Get address" />
 
     <TextView
+        android:id="@+id/label_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/label_current"
+        android:layout_below="@+id/button"
+        android:layout_marginTop="70dp"
+        android:text="Address" />
+
+    <Button
+        android:id="@+id/proximity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="26dp"
+        android:text="Test proximity" />
+
+    <TextView
+        android:id="@+id/current_long"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/current_lat"
+        android:layout_marginTop="26dp"
+        android:text="No history" />
+
+    <TextView
         android:id="@+id/address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/label_address"
         android:layout_alignBottom="@+id/label_address"
-        android:layout_alignEnd="@+id/button2" />
-
-    <TextView
-        android:text="Address"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/label_address"
-        android:layout_marginTop="70dp"
-        android:layout_below="@+id/button"
-        android:layout_alignEnd="@+id/label_current" />
+        android:layout_alignEnd="@+id/proximity"
+        android:layout_alignStart="@+id/current_lat" />
 
 
 </RelativeLayout>

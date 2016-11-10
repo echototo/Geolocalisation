@@ -3,6 +3,7 @@ package com.example.alexandre.geolocalisation;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.SystemClock;
 
 /**
  * Created by Alexandre on 09/11/2016.
@@ -18,14 +19,8 @@ public class MockLocationProvider {
 
         LocationManager lm = (LocationManager) ctx.getSystemService(
                 Context.LOCATION_SERVICE);
-        System.out.println("pote");
-        try {
-            lm.addTestProvider(providerName, true, false, true, false, false,
-                    true, true, 0, 5);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        System.out.println("pa");
+        lm.addTestProvider(providerName, true, false, true, false, false,
+                true, true, 0, 5);
         lm.setTestProviderEnabled(providerName, true);
     }
 
@@ -37,10 +32,10 @@ public class MockLocationProvider {
         mockLocation.setLatitude(lat);
         mockLocation.setLongitude(lon);
         mockLocation.setAltitude(0);
+        mockLocation.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
+        mockLocation.setAccuracy(333);
         mockLocation.setTime(System.currentTimeMillis());
-
         lm.setTestProviderLocation(providerName, mockLocation);
-
     }
 
     public void shutdown() {
